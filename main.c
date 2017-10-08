@@ -1,6 +1,12 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include<fstream.h>
+#include "at.h"
+
+struct Constants {
+    char  constant_content[255];
+    int   ok;
+    int   constant_id;
+ } constants;
 
 
 int main(int args, char *argv[])
@@ -16,7 +22,7 @@ int main(int args, char *argv[])
     while(1)
     {
         buff= fgetc(f);
-        if(feof(buff)) break;
+        if(feof(f)) break;
 
         ok = at_parser(buff);
 
