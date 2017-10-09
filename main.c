@@ -1,34 +1,37 @@
-#include<stdio.h>
-#include<stdlib.h>
+/*
+ * main.c
+
+ *
+ *  Created on: Oct 8, 2017
+ *      Author: zsofi
+ */
+
 #include "at.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-struct Constants {
-    char  constant_content[255];
-    int   ok;
-    int   constant_id;
- } constants;
+int main(int argc, char* argv[]){
+	st_answer resulting_struct;
 
+	//FILE* file_write = fopen(argv[1],"wb");
+	//char writting[] = "\r\nOK";
+	//fwrite(writting,strlen(writting), 1, file_write );
+	//fclose(file_write);
 
-int main(int args, char *argv[])
-{
-    FILE *f;
-    char buff;
-    int ok =0;
-    if(args!=2)
-        printf("Numarul parametrilor este invalid!");
-    f=fopen(argv[1],"r");
-    if(f==NULL)
-        printf("Eroare la deschiderea fisierului");
-    while(1)
-    {
-        buff= fgetc(f);
-        if(feof(f)) break;
-
-        ok = at_parser(buff);
-
-    }
-
-       fclose(f);
-       
-       return 0;
+	FILE* file = fopen(argv[1],"rb");
+	if (!file){
+		printf("File not found\n");
+		return -1;
+	}
+	char c;
+	fread(&c, sizeof(char), 1, file);
+	while(!feof(file)){
+		at_parser(c, &resulting_struct);
+		printf("%d\n",resulting_struct.success);
+		if (resulting_struct.success == 2 && resulting_struct.data){
+			printf("%s\n",resulting_struct.data);
+		}
+		fread(&c, sizeof(char), 1, file);
+	}
+	return 0;
 }
