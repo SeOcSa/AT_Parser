@@ -1,9 +1,9 @@
 /*/*
- * at.h
- *
- *  Created on: Oct 8, 2017
- *      Author: zsofi
- */
+* at.h
+*
+*  Created on: Oct 8, 2017
+*      Author: zsofi, Sebi
+*/
 
 #ifndef AT_H_
 
@@ -15,7 +15,7 @@
 #define FALSE 0;
 #define END 2;
 
-typedef struct st_answer{
+typedef struct st_answer {
 	int success;
 	int line_count;
 	char data[ARRAY_SIZE][STRING_SIZE + 1];
