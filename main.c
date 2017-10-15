@@ -26,12 +26,25 @@ int main(int argc, char* argv[]){
 	char c;
 	fread(&c, sizeof(char), 1, file);
 	while(!feof(file)){
+//		printf("%x", c);
 		at_parser(c, &resulting_struct);
-		printf("%d\n",resulting_struct.success);
 		if (resulting_struct.success == 2 && resulting_struct.data){
-			printf("%s\n",resulting_struct.data);
+			for (int i = 0 ; i < resulting_struct.data_count; i++){
+				printf("%s\n",resulting_struct.data[i]);
+			}
+			printf("\n");
+		}
+		else{
+			if(!resulting_struct.success){
+				printf("Parsing ERROR at line: %d. Exiting...\n", resulting_struct.line_count);
+				break;
+			}
 		}
 		fread(&c, sizeof(char), 1, file);
+	}
+	if(feof(file) && resulting_struct.success == 1){
+		printf("ERROR: End of file found before constructing the entire result\n\n");
+		return 0;
 	}
 	return 0;
 }
