@@ -16,15 +16,20 @@
 #define LF '\n'
 #define OK "OK"
 #define ERROR_STATE 999
-
 int state = INITIAL_STATE;
 int line_count = 0;
+int not_plus = FALSE;
+int ip_flag = FALSE;
+int sms_flag = FALSE;
 
 int data_count = 0;
 char data[STRING_SIZE + 1];
 void succeed(int line_cnt, char* data, st_answer* result);
 void fail(st_answer* answer);
 void reset(st_answer* result);
+void set_not_plus(int value);
+void set_ip_flag(int value);
+void set_sms_flag(int value);
 
 void at_parser(char ch, st_answer *result) {
 
@@ -45,6 +50,13 @@ void at_parser(char ch, st_answer *result) {
 		fail(result);
 		break;
 	case 2:
+		if (not_plus){
+			state = 10;
+			memset(data, 0, strlen(data));
+			data[strlen(data)] = ch;
+			succeed(line_count, NULL, result);
+			break;
+		}
 		switch (ch) {
 		case 'O':
 			state = 3;
@@ -66,7 +78,14 @@ void at_parser(char ch, st_answer *result) {
 			succeed(line_count, NULL, result);
 			break;
 		default:
-			fail(result);
+			if (sms_flag){
+				state = 10;
+				data[strlen(data)] = ch;
+				succeed(line_count, NULL, result);
+			}
+			else{
+				fail(result);
+			}
 			break;
 		}
 		break;
@@ -161,6 +180,13 @@ void at_parser(char ch, st_answer *result) {
 			state = 13;
 			succeed(line_count, NULL, result);
 			break;
+		default:
+			if (sms_flag){
+				state = 10;
+				data[strlen(data)] = ch;
+				succeed(line_count, NULL, result);
+			}
+			break;
 		}
 		break;
 	case 13:
@@ -235,3 +261,14 @@ void reset(st_answer* result) {
 	memset(data, 0, strlen(data));
 }
 
+void set_not_plus_flag(int value){
+	not_plus = value;
+}
+
+void set_ip_flag(int value){
+	ip_flag = value;
+}
+
+void set_sms_flag(int value){
+	sms_flag = value;
+}
